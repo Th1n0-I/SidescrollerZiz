@@ -25,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
     [SerializeField] bool doingCoyote;
     [SerializeField] float coyoteTime;
+    [SerializeField] float jumpCooldownTime;
+    [SerializeField] float jumpCooldownTimer;
 
     Animator animator;
     public float invulnerabilityTimer = 1;
@@ -46,11 +48,13 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        ReadPlayerInputs();
+
+        invulnerabilityTimer -= Time.deltaTime;
+        jumpCooldownTimer -= Time.deltaTime;
 
         groundCheck();
 
-        invulnerabilityTimer -= Time.deltaTime;
+        ReadPlayerInputs();
     }
 
     private void FixedUpdate()
@@ -77,16 +81,18 @@ public class PlayerMovement : MonoBehaviour
     public void bounce()
     {
         playerRB.linearVelocityY = 0;
-        playerRB.AddForce(Vector2.right * jumpForce, ForceMode2D.Impulse);
+        playerRB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
     void ReadPlayerInputs()
     {
         moveInput = moveAction.ReadValue<Vector2>();
 
-        if (jumpAction.WasPerformedThisFrame() && isGrounded)
+        if (jumpAction.WasPerformedThisFrame() && isGrounded && jumpCooldownTimer <= 0)
         {
             playerRB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isGrounded = false;
+            jumpCooldownTimer = jumpCooldownTime;
         }
 
         if (crouchAction.IsPressed())
@@ -131,7 +137,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Collider2D hit = Physics2D.OverlapCircle(groundCheckPosition.position, groundCheckRadius, groundLayer);
 
-        if (hit != null)
+        if (hit != null && jumpCooldownTimer <= 0)
         {
             isGrounded = true;
             animator.SetBool("isGrounded", true);
