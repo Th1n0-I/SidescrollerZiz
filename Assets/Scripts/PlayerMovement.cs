@@ -1,0 +1,175 @@
+using System.Collections;
+using System.Xml.Serialization;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlayerMovement : MonoBehaviour
+{
+    Rigidbody2D playerRB;
+
+    InputAction moveAction;
+    InputAction jumpAction;
+    InputAction crouchAction;
+    Vector2 moveInput;
+
+    [Header("PlayerStats")]
+    [SerializeField] float moveSpeed;
+    [SerializeField] float jumpForce;
+    [SerializeField] public bool isFacingRight;
+
+    [Header("GroundcheckRelated")]
+    [SerializeField] bool isGrounded;
+    [SerializeField] Transform groundCheckPosition;
+    [SerializeField] float groundCheckRadius;
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] bool doingCoyote;
+    [SerializeField] float coyoteTime;
+
+    Animator animator;
+    public float invulnerabilityTimer = 1;
+    public HealthBar healthBar;
+
+ 
+    void Start()
+    {
+        playerRB = GetComponent<Rigidbody2D>();
+        animator = GetComponentInChildren<Animator>();
+        moveAction = InputSystem.actions.FindAction("Move");
+        jumpAction = InputSystem.actions.FindAction("Jump");
+        crouchAction = InputSystem.actions.FindAction("Crouch");
+        isFacingRight = true;
+
+    }
+
+    
+
+    void Update()
+    {
+        ReadPlayerInputs();
+
+        groundCheck();
+
+        invulnerabilityTimer -= Time.deltaTime;
+    }
+
+    private void FixedUpdate()
+    {
+        MovePlayer();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("enemy") && invulnerabilityTimer <= 0)
+        {
+            healthBar.health -= 1;
+
+            playerHit();
+
+        }
+    }
+
+    void playerHit()
+    {
+        invulnerabilityTimer = 1f;
+    }
+
+    public void bounce()
+    {
+        playerRB.linearVelocityY = 0;
+        playerRB.AddForce(Vector2.right * jumpForce, ForceMode2D.Impulse);
+    }
+
+    void ReadPlayerInputs()
+    {
+        moveInput = moveAction.ReadValue<Vector2>();
+
+        if (jumpAction.WasPerformedThisFrame() && isGrounded)
+        {
+            playerRB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
+
+        if (crouchAction.IsPressed())
+        {
+            animator.SetBool("isCrouching", true);
+        } else
+        {
+            animator.SetBool("isCrouching", false);
+        }
+
+        if (moveInput.x > 0)
+        {
+            isFacingRight = true;
+            animator.SetBool("isWalking", true);
+        }
+        else if (moveInput.x < 0)
+        {
+            isFacingRight = false;
+            animator.SetBool("isWalking", true);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
+        }
+    }
+
+    void MovePlayer()
+    {
+        playerRB.linearVelocityX = moveInput.x * moveSpeed;
+
+        if (isFacingRight)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+    }
+
+    void groundCheck()
+    {
+        Collider2D hit = Physics2D.OverlapCircle(groundCheckPosition.position, groundCheckRadius, groundLayer);
+
+        if (hit != null)
+        {
+            isGrounded = true;
+            animator.SetBool("isGrounded", true);
+            doingCoyote = false;
+        }
+        else
+        {
+            CoyoteTime();
+        }
+    }
+
+    private void CoyoteTime()
+    {
+        if (!doingCoyote) 
+        { 
+            StartCoroutine(CoyoteTimer(coyoteTime)); 
+            doingCoyote = true;
+        }
+     
+    }
+
+    IEnumerator CoyoteTimer(float timer)
+    {
+        yield return new WaitForSeconds(timer);
+        isGrounded = false;
+        animator.SetBool("isGrounded", false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (isGrounded) 
+        {
+            Gizmos.color = Color.green;
+        } else
+        {
+            Gizmos.color = Color.red;
+        }
+        Gizmos.DrawWireSphere(groundCheckPosition.position, groundCheckRadius);
+    }
+
+}
