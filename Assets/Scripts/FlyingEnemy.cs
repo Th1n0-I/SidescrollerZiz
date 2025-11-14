@@ -3,10 +3,11 @@ using UnityEngine;
 
 public class FlyingEnemy : MonoBehaviour
 {
-    BoxCollider2D enemyBc;
-    Rigidbody2D enemyRb;
-    Animator animator;
-    SpriteRenderer enemySr;
+	private static readonly int IsDead = Animator.StringToHash("isDead");
+	BoxCollider2D               enemyBc;
+    Rigidbody2D                 enemyRb;
+    Animator                    animator;
+    SpriteRenderer              enemySr;
     [SerializeField] GameObject pointA;
     [SerializeField] GameObject pointB;
 
@@ -45,7 +46,7 @@ public class FlyingEnemy : MonoBehaviour
     }
     public void HitEnemy() {
         enemyBc.enabled = false;
-        animator.SetBool("isDead", true);
+        animator.SetBool(IsDead, true);
         enemyRb.gravityScale = 4;
         enemyRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         StartCoroutine(KillEnemy());

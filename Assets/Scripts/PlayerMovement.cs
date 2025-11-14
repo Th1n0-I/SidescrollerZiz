@@ -1,14 +1,14 @@
 using System.Collections;
-using System.Xml.Serialization;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-	private static readonly int IsGrounded = Animator.StringToHash("isGrounded");
+	private static readonly int IsGrounded  = Animator.StringToHash("isGrounded");
+	private static readonly int IsCrouching = Animator.StringToHash("isCrouching");
+	private static readonly int IsWalking   = Animator.StringToHash("isWalking");
+	
 	private Rigidbody2D playerRb;
-
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction crouchAction;
@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce;
     [SerializeField] public bool isFacingRight;
 
-    [Header("GroundcheckRelated")]
+    [Header("GroundCheckRelated")]
     [SerializeField] bool isGrounded;
     [SerializeField] Transform groundCheckPosition;
     [SerializeField] float groundCheckRadius;
@@ -29,9 +29,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float jumpCooldownTime;
     [SerializeField] float jumpCooldownTimer;
 
+    [Header("KnockBackRelated")]
+    private bool stunned = false;
+    [SerializeField] private float knockBackIntensity;
+    [SerializeField] private float stunTimer;
+    
+    [Header("Other")]
     Animator animator;
-    public float invulnerabilityTimer = 1;
-    public HealthBar healthBar;
+    public float     invulnerabilityTimer = 1;
+    public HealthBar healthBar; 
 
  
     void Start() {
@@ -41,7 +47,6 @@ public class PlayerMovement : MonoBehaviour
         jumpAction = InputSystem.actions.FindAction("Jump");
         crouchAction = InputSystem.actions.FindAction("Crouch");
         isFacingRight = true;
-
     }
 
     
@@ -60,11 +65,28 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.CompareTag("enemy") && invulnerabilityTimer <= 0)
+    private void KnockBack(Vector3 colliderPosition) {
+	    stunned = true;
+	    if (colliderPosition.x >= transform.position.x) {
+		    playerRb.AddForceAtPosition(new Vector2(-1 * knockBackIntensity, 0), colliderPosition, ForceMode2D.Impulse);
+	    }
+	    else {
+		    playerRb.AddForceAtPosition(new Vector2(1 * knockBackIntensity, 0), colliderPosition, ForceMode2D.Impulse);
+	    }
+	    Bounce(0.5f);
+	    StartCoroutine(StunnedTimer(stunTimer));
+    }
+
+    IEnumerator StunnedTimer(float timer) {
+	    yield return new WaitForSeconds(timer);
+	    stunned = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.CompareTag("enemy") && invulnerabilityTimer <= 0)
         {
             healthBar.health -= 1;
-
+			KnockBack(other.transform.position);
             PlayerHit();
 
         }
@@ -74,49 +96,51 @@ public class PlayerMovement : MonoBehaviour
         invulnerabilityTimer = 1f;
     }
 
-    public void Bounce() {
+    public void Bounce(float intensity = 1) {
         playerRb.linearVelocityY = 0;
-        playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        playerRb.AddForce(Vector2.up * jumpForce * intensity, ForceMode2D.Impulse);
     }
 
     private void ReadPlayerInputs() {
         moveInput = moveAction.ReadValue<Vector2>();
 
-        if (jumpAction.WasPerformedThisFrame() && isGrounded && jumpCooldownTimer <= 0) {
+        if (jumpAction.WasPerformedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned) {
             playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isGrounded = false;
             jumpCooldownTimer = jumpCooldownTime;
-            animator.SetBool("isGrounded", false);
+            animator.SetBool(IsGrounded, false);
         }
 
         if (crouchAction.IsPressed()) {
-            animator.SetBool("isCrouching", true);
+            animator.SetBool(IsCrouching, true);
         } else {
-            animator.SetBool("isCrouching", false);
+            animator.SetBool(IsCrouching, false);
         }
 
         if (moveInput.x > 0) {
             isFacingRight = true;
-            animator.SetBool("isWalking", true);
+            animator.SetBool(IsWalking, true);
         }
         else if (moveInput.x < 0) {
             isFacingRight = false;
-            animator.SetBool("isWalking", true);
+            animator.SetBool(IsWalking, true);
         }
         else {
-            animator.SetBool("isWalking", false);
+            animator.SetBool(IsWalking, false);
         }
     }
 
     private void MovePlayer() {
-        playerRb.linearVelocityX = moveInput.x * moveSpeed;
+	    if (!stunned) {
+		    playerRb.linearVelocityX = moveInput.x * moveSpeed;
 
-        if (isFacingRight) {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
+		    if (isFacingRight) {
+			    transform.rotation = Quaternion.Euler(0, 0, 0);
+		    }
+		    else {
+			    transform.rotation = Quaternion.Euler(0, 180, 0);
+		    }
+	    }
     }
 
     private void GroundCheck() {
