@@ -10,24 +10,19 @@ public class Counters : MonoBehaviour
     [SerializeField] int count;
 
     [SerializeField] GameObject diamondCounter;
-    [SerializeField] GameObject BombCounter;
-    [SerializeField] GameObject KeyCounter;
+    [SerializeField] GameObject bombCounter;
+    [SerializeField] GameObject keyCounter;
 
-    public void addDiamonds()
-    {
+    public void AddDiamonds() {
         diamonds++;
-        return;
     }
    
-    void Start()
-    {
+    void Start() {
         inventory = FindAnyObjectByType<Inventory>();
     }
 
-    void Update()
-    {
+    void Update() {
         diamondCounter.GetComponent<TextMeshProUGUI>().text = "X" + diamonds;
-        BombCounter.GetComponent<TextMeshProUGUI>().text = "x" + inventory.bombs;
-        KeyCounter.GetComponent<TextMeshProUGUI>().text = "X" + inventory.keys;
+        bombCounter.GetComponent<TextMeshProUGUI>().text = "x" + inventory.bombs;
     }
 }

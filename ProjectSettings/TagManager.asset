@@ -4,10 +4,17 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Key
   - Bomb
   - explosion
   - enemy
+  - BlueKey
+  - YellowKey
+  - GreenKey
+  - RedKey
+  - BlueLock
+  - YellowLock
+  - GreenLock
+  - RedLock
   layers:
   - Default
   - TransparentFX

@@ -1,19 +1,30 @@
+using System;
 using System.Collections;
+using System.Globalization;
+using TMPro;
+using TMPro.Examples;
+using Unity.Cinemachine;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Bomb : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    Rigidbody2D bombRb;
-    [SerializeField] float throwForce;
-    [SerializeField] float bombTimer;
+public class Bomb : MonoBehaviour {
+	private          TMP_Text  countdown;
+    private          Rigidbody2D bombRb;
+    [SerializeField] float       throwForce;
+    [SerializeField] float       bombTimer;
+    
+    private float countdownTimer = 3.1f;
+    
+    CinemachineImpulseSource impulseSource;
 
     [SerializeField] GameObject explosion;
-    void Start()
-    {
-        bombRb = GetComponent<Rigidbody2D>();
+    void Start() {
+	    impulseSource = GetComponent<CinemachineImpulseSource>();
+        bombRb        = GetComponent<Rigidbody2D>();
+        countdown     = GetComponentInChildren<TMP_Text>();
         bombRb.AddForce((transform.right + transform.up) * throwForce);
-
+        
         StartCoroutine(BombTimer());
     }
 
@@ -28,13 +39,15 @@ public class Bomb : MonoBehaviour
         FindAnyObjectByType<AudioManager>().PlaySound(0);
 
         yield return new WaitForSeconds(0.1f);
-
+		
+        impulseSource.GenerateImpulse();
         Destroy(gameObject);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        countdownTimer -= Time.deltaTime;
+        countdown.text =  Math.Ceiling(countdownTimer).ToString();
     }
 }

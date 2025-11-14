@@ -3,18 +3,15 @@ using UnityEngine;
 
 public class Pickup : MonoBehaviour
 {
-    public Counters Counters;
+    public Counters counters;
 
-    private void Start()
-    {
-        Counters = FindAnyObjectByType<Counters>();
+    private void Start() {
+        counters = FindAnyObjectByType<Counters>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            Counters.addDiamonds();
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Player")) {
+            counters.AddDiamonds();
             Destroy(gameObject);
             FindAnyObjectByType<AudioManager>().PlaySound(3);
         }

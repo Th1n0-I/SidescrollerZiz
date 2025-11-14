@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Inventory : MonoBehaviour
-{
+public class Inventory : MonoBehaviour {
 
-    public int keys;
+	public int blueKeys;
+	public int yellowKeys;
+	public int greenKeys;
+	public int redKeys;
     public int bombs;
 
     InputAction attackAction;
@@ -26,10 +28,25 @@ public class Inventory : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Key"))
+        if (collision.gameObject.CompareTag("BlueKey"))
         {
-            keys++;
+            blueKeys++;
             Destroy(collision.gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("YellowKey")) {
+	        yellowKeys++;
+	        Destroy(collision.gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("GreenKey")) {
+	        greenKeys++;
+	        Destroy(collision.gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("RedKey")) {
+	        redKeys++;
+	        Destroy(collision.gameObject);
         }
 
         if (collision.gameObject.CompareTag("Bomb"))
