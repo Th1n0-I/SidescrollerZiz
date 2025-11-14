@@ -16,6 +16,8 @@ public class FlyingEnemy : MonoBehaviour
     public float moveDistance;
     public float distanceBetweenPoints;
 
+
+
     // 1: Moves to the right
     // -1: Moves ot the left
     public int direction = 1;
