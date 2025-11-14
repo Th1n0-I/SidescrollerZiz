@@ -14,7 +14,7 @@ public class EnemyHitDetection : MonoBehaviour
         if (collision.gameObject.CompareTag("Player") && playerMovement.invulnerabilityTimer <= 0)
         {
             enemy.hitEnemy();
-            playerMovement.bounce();
+            playerMovement.Bounce();
         }
     }
 }

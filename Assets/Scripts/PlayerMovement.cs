@@ -6,16 +6,17 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    Rigidbody2D playerRB;
+	private static readonly int IsGrounded = Animator.StringToHash("isGrounded");
+	private Rigidbody2D playerRb;
 
-    InputAction moveAction;
-    InputAction jumpAction;
-    InputAction crouchAction;
-    Vector2 moveInput;
+    private InputAction moveAction;
+    private InputAction jumpAction;
+    private InputAction crouchAction;
+    private Vector2 moveInput;
 
     [Header("PlayerStats")]
-    [SerializeField] float moveSpeed;
-    [SerializeField] float jumpForce;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float jumpForce;
     [SerializeField] public bool isFacingRight;
 
     [Header("GroundcheckRelated")]
@@ -33,9 +34,8 @@ public class PlayerMovement : MonoBehaviour
     public HealthBar healthBar;
 
  
-    void Start()
-    {
-        playerRB = GetComponent<Rigidbody2D>();
+    void Start() {
+        playerRb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
@@ -46,133 +46,110 @@ public class PlayerMovement : MonoBehaviour
 
     
 
-    void Update()
-    {
+    void Update() {
 
         invulnerabilityTimer -= Time.deltaTime;
         jumpCooldownTimer -= Time.deltaTime;
 
-        groundCheck();
+        GroundCheck();
 
         ReadPlayerInputs();
     }
 
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         MovePlayer();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
+    private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.CompareTag("enemy") && invulnerabilityTimer <= 0)
         {
             healthBar.health -= 1;
 
-            playerHit();
+            PlayerHit();
 
         }
     }
 
-    void playerHit()
-    {
+    private void PlayerHit() {
         invulnerabilityTimer = 1f;
     }
 
-    public void bounce()
-    {
-        playerRB.linearVelocityY = 0;
-        playerRB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+    public void Bounce() {
+        playerRb.linearVelocityY = 0;
+        playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
-    void ReadPlayerInputs()
-    {
+    private void ReadPlayerInputs() {
         moveInput = moveAction.ReadValue<Vector2>();
 
-        if (jumpAction.WasPerformedThisFrame() && isGrounded && jumpCooldownTimer <= 0)
-        {
-            playerRB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        if (jumpAction.WasPerformedThisFrame() && isGrounded && jumpCooldownTimer <= 0) {
+            playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isGrounded = false;
             jumpCooldownTimer = jumpCooldownTime;
+            animator.SetBool("isGrounded", false);
         }
 
-        if (crouchAction.IsPressed())
-        {
+        if (crouchAction.IsPressed()) {
             animator.SetBool("isCrouching", true);
-        } else
-        {
+        } else {
             animator.SetBool("isCrouching", false);
         }
 
-        if (moveInput.x > 0)
-        {
+        if (moveInput.x > 0) {
             isFacingRight = true;
             animator.SetBool("isWalking", true);
         }
-        else if (moveInput.x < 0)
-        {
+        else if (moveInput.x < 0) {
             isFacingRight = false;
             animator.SetBool("isWalking", true);
         }
-        else
-        {
+        else {
             animator.SetBool("isWalking", false);
         }
     }
 
-    void MovePlayer()
-    {
-        playerRB.linearVelocityX = moveInput.x * moveSpeed;
+    private void MovePlayer() {
+        playerRb.linearVelocityX = moveInput.x * moveSpeed;
 
-        if (isFacingRight)
-        {
+        if (isFacingRight) {
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
-        else
-        {
+        else {
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
     }
 
-    void groundCheck()
-    {
+    private void GroundCheck() {
         Collider2D hit = Physics2D.OverlapCircle(groundCheckPosition.position, groundCheckRadius, groundLayer);
 
-        if (hit != null && jumpCooldownTimer <= 0)
-        {
+        if (hit && jumpCooldownTimer <= 0) {
             isGrounded = true;
-            animator.SetBool("isGrounded", true);
+            animator.SetBool(IsGrounded, true);
             doingCoyote = false;
         }
-        else
-        {
+        else {
             CoyoteTime();
         }
     }
 
-    private void CoyoteTime()
-    {
-        if (!doingCoyote) 
-        { 
+    private void CoyoteTime() {
+        if (!doingCoyote) { 
             StartCoroutine(CoyoteTimer(coyoteTime)); 
             doingCoyote = true;
         }
      
     }
 
-    IEnumerator CoyoteTimer(float timer)
-    {
+    IEnumerator CoyoteTimer(float timer) {
         yield return new WaitForSeconds(timer);
         isGrounded = false;
-        animator.SetBool("isGrounded", false);
+        animator.SetBool(IsGrounded, false);
     }
 
-    private void OnDrawGizmos()
-    {
-        if (isGrounded) 
-        {
+    private void OnDrawGizmos() {
+        if (isGrounded) {
             Gizmos.color = Color.green;
-        } else
-        {
+        } else {
             Gizmos.color = Color.red;
         }
         Gizmos.DrawWireSphere(groundCheckPosition.position, groundCheckRadius);

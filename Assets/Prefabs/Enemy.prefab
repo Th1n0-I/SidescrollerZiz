@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2193099761873623310}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LookPosition
   m_TagString: Untagged
   m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9061492009816524474}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GroundCheckPosition
   m_TagString: Untagged
   m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 4345311819776962826}
   - component: {fileID: 1811250482148942635}
   - component: {fileID: 7034123513999198369}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy
   m_TagString: enemy
   m_Icon: {fileID: 0}
@@ -238,7 +238,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -278,7 +278,7 @@ GameObject:
   - component: {fileID: 7492287397106661469}
   - component: {fileID: 7549374913283015021}
   - component: {fileID: 5001550128020919534}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HitDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -349,3 +349,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2d86ffcdf86f3e468a24db2da39200a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  enemy: {fileID: 0}
+  playerMovement: {fileID: 0}

@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator KillEnemy()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(5);
         Destroy(gameObject);
     }
 
