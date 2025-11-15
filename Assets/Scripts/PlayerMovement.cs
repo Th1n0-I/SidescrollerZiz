@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -38,9 +39,11 @@ public class PlayerMovement : MonoBehaviour
     Animator animator;
     public float     invulnerabilityTimer = 1;
     public HealthBar healthBar; 
+    private CinemachineImpulseSource cinemachineImpulseSource;
 
  
     void Start() {
+	    cinemachineImpulseSource =  GetComponent<CinemachineImpulseSource>();
         playerRb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         moveAction = InputSystem.actions.FindAction("Move");
@@ -87,8 +90,8 @@ public class PlayerMovement : MonoBehaviour
         {
             healthBar.health -= 1;
 			KnockBack(other.transform.position);
+			cinemachineImpulseSource.GenerateImpulse();
             PlayerHit();
-
         }
     }
 
