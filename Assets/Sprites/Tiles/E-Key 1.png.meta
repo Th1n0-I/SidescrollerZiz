@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e3c1d95b9a205684c8cf76f471239eac
+guid: cf1f072616dae974ab64c4a20905910f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8601640486741147799
-    second: lever_left_0
+      213: -1223216668860354309
+    second: E-Key_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lever_left_0
+      name: E-Key_0
       rect:
         serializedVersion: 2
-        x: 3
+        x: 32
         y: 0
-        width: 110
-        height: 105
-      alignment: 9
-      pivot: {x: 0.55, y: 0.4933211}
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 79003d1037a2f5770800000000000000
-      internalID: 8601640486741147799
+      spriteID: bf0fd39abe2460fe0800000000000000
+      internalID: -1223216668860354309
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d229a1a148196cf40942ea8c74c6905a
+    spriteID: b5273835f6efc6d49aa13e60d52f5283
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lever_left_0: 8601640486741147799
+      E-Key_0: -1223216668860354309
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
