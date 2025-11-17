@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
 	private                  Button      startButton;
 	private                  Button      playgroundButton;
 	private                  Button      quitButton;
+	private                  GameObject  player;
 
 	private void OnEnable() {
 		SceneManager.sceneLoaded += OnSceneLoaded;
@@ -44,6 +46,11 @@ public class GameManager : MonoBehaviour
 			SceneManager.LoadScene("StartMenu");
 		}
 		else if (scene.name == "PlayGround") {
+			if (continueButton != null) continueButton.onClick.RemoveAllListeners();
+			if (menuButton     != null) menuButton.onClick.RemoveAllListeners();
+			
+			player = GameObject.FindGameObjectWithTag("Player");
+
 			pauseAction = InputSystem.actions["Pause"];
 			pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu");
 			
@@ -55,6 +62,10 @@ public class GameManager : MonoBehaviour
 			
 			pauseMenu.SetActive(false);
 		} else if (scene.name == "StartMenu") {
+			if (startButton      != null) startButton.onClick.RemoveAllListeners();
+			if (playgroundButton != null) playgroundButton.onClick.RemoveAllListeners();
+			if (quitButton       != null) quitButton.onClick.RemoveAllListeners();
+			
 			startButton = GameObject.FindGameObjectWithTag("StartButton").GetComponent<Button>();
 			quitButton = GameObject.FindGameObjectWithTag("QuitButton").GetComponent<Button>();
 			playgroundButton = GameObject.FindGameObjectWithTag("PlaygroundButton").GetComponent<Button>();
@@ -66,6 +77,8 @@ public class GameManager : MonoBehaviour
 			startButton.onClick.AddListener(StartGame);
 			playgroundButton.onClick.AddListener(Playground);
 			quitButton.onClick.AddListener(Quit);
+			
+			Debug.Log("WOW");
 		}
 	}
 	
@@ -84,6 +97,8 @@ public class GameManager : MonoBehaviour
 	}
 
 	private void ReturnToMenu() {
+		Destroy(player);
+		UnPauseGame();
 		continueButton.onClick.RemoveAllListeners();
 		menuButton.onClick.RemoveAllListeners();
 		SceneManager.LoadScene("StartMenu");
@@ -98,9 +113,10 @@ public class GameManager : MonoBehaviour
 	}
 
 	public void Playground() {
+		Debug.Log("playground() called");
 		startButton.onClick.RemoveAllListeners();
 		playgroundButton.onClick.RemoveAllListeners();
 		quitButton.onClick.RemoveAllListeners();
-		SceneManager.LoadScene("Playground");
+		SceneManager.LoadScene("PlayGround");
 	}
 }

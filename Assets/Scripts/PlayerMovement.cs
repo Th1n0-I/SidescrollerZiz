@@ -127,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void KillPlayer() {
+	    Debug.Log("YIPPIYE YAY WOHOOOOO!");
 	    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
