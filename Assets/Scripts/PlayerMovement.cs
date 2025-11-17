@@ -124,10 +124,7 @@ public class PlayerMovement : MonoBehaviour
 	        Debug.Log(other.GetComponentInParent<DoubleJump>());
 	        doubleJumps.Add(other.GetComponentInParent<DoubleJump>());
 	        Destroy(other.gameObject);
-        } else if (other.CompareTag("spring")) {
-	        Bounce(2);
-	        
-        }
+        } 
     }
 
     private void KillPlayer() {
