@@ -440,7 +440,7 @@ GameObject:
   - component: {fileID: 5780732491686510220}
   - component: {fileID: 6165666691455337352}
   - component: {fileID: 5280723138821463564}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Explosion
   m_TagString: explosion
   m_Icon: {fileID: 0}

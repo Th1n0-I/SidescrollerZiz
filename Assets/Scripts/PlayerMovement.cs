@@ -10,7 +10,8 @@ public class PlayerMovement : MonoBehaviour
 	private static readonly int IsGrounded  = Animator.StringToHash("isGrounded");
 	private static readonly int IsCrouching = Animator.StringToHash("isCrouching");
 	private static readonly int IsWalking   = Animator.StringToHash("isWalking");
-	
+	private static readonly int Hit         = Animator.StringToHash("PlayerHit");
+
 	private Rigidbody2D playerRb;
     private InputAction moveAction;
     private InputAction jumpAction;
@@ -39,11 +40,13 @@ public class PlayerMovement : MonoBehaviour
     
     [Header("Other")]
     Animator animator;
-    public float     invulnerabilityTimer = 1;
-    public HealthBar healthBar; 
-    private CinemachineImpulseSource cinemachineImpulseSource;
-    private AudioManager audioManager;
-
+    public                   float                    invulnerabilityTimer = 1;
+    public                   HealthBar                healthBar; 
+    private                  CinemachineImpulseSource cinemachineImpulseSource;
+    private                  AudioManager             audioManager;
+    private                  SpriteRenderer           playerSr;
+    private                  float                    currentJumpHeight;
+    [SerializeField] private float                    maxJumpHeight;
  
     void Start() {
 	    cinemachineImpulseSource =  GetComponent<CinemachineImpulseSource>();
@@ -112,6 +115,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void PlayerHit() {
+	    animator.SetTrigger("hit");
         invulnerabilityTimer = 1f;
     }
 
@@ -122,17 +126,30 @@ public class PlayerMovement : MonoBehaviour
 	        audioManager.PlaySound(5);
         }
     }
-
+	
     private void ReadPlayerInputs() {
         moveInput = moveAction.ReadValue<Vector2>();
 
-        if (jumpAction.WasPerformedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned) {
-            playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            isGrounded = false;
-            jumpCooldownTimer = jumpCooldownTime;
-            animator.SetBool(IsGrounded, false);
-            audioManager.PlaySound(5);
+        if (jumpAction.WasPressedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned) {
+	        playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+	        isGrounded        = false;
+	        jumpCooldownTimer = jumpCooldownTime;
+	        animator.SetBool(IsGrounded, false);
+	        audioManager.PlaySound(5);
+        } else if (jumpAction.IsPressed()) {
+	        if (currentJumpHeight < maxJumpHeight) {
+		        playerRb.AddForce(Vector2.up * (jumpForce * Time.deltaTime * 2), ForceMode2D.Impulse);
+		        currentJumpHeight += Time.deltaTime;
+	        }
         }
+        
+        //if (jumpAction.WasPerformedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned) {
+            //playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            //isGrounded = false;
+            //jumpCooldownTimer = jumpCooldownTime;
+            //animator.SetBool(IsGrounded, false);
+            //audioManager.PlaySound(5);
+        //}
 
         if (crouchAction.IsPressed()) {
             animator.SetBool(IsCrouching, true);
@@ -170,7 +187,8 @@ public class PlayerMovement : MonoBehaviour
         Collider2D hit = Physics2D.OverlapCircle(groundCheckPosition.position, groundCheckRadius, groundLayer);
 
         if (hit && jumpCooldownTimer <= 0) {
-            isGrounded = true;
+            isGrounded        = true;
+            currentJumpHeight = 0;
             animator.SetBool(IsGrounded, true);
             doingCoyote = false;
         }
