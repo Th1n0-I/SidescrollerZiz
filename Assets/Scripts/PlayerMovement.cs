@@ -94,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        if (other.gameObject.CompareTag("enemy") && invulnerabilityTimer <= 0)
+        if (other.CompareTag("enemy")  && invulnerabilityTimer <= 0 || other.CompareTag("explosion") && invulnerabilityTimer <= 0)
         {
             healthBar.health -= 1;
             if (healthBar.health <= 0) {
