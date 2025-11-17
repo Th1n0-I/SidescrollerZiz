@@ -16,6 +16,7 @@ TagManager:
   - GreenLock
   - RedLock
   - KillBox
+  - DoubleJump
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - Player
   - Bomb
   - Enemy
-  - 
+  - DestroyedPart
   - 
   - 
   - 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -35,28 +36,37 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("KnockBackRelated")]
     private bool stunned = false;
-    [SerializeField] private float knockBackIntensity;
-    [SerializeField] private float stunTimer;
-    
-    [Header("Other")]
-    Animator animator;
-    public                   float                    invulnerabilityTimer = 1;
-    public                   HealthBar                healthBar; 
-    private                  CinemachineImpulseSource cinemachineImpulseSource;
-    private                  AudioManager             audioManager;
-    private                  SpriteRenderer           playerSr;
-    private                  float                    currentJumpHeight;
-    [SerializeField] private float                    maxJumpHeight;
+    [SerializeField]  private float                    knockBackIntensity;
+    [SerializeField]  private float                    stunTimer;
+    [SerializeField]  private GameObject               playerSr;
+    [SerializeField]  private GameObject               groundCheck;
+	
+    [Header("Other")] private Animator                 spriteAnimator;
+    private                   Animator                 groundCheckAnimator;
+    public                    float                    invulnerabilityTimer = 1;
+    public                    HealthBar                healthBar; 
+    private                   CinemachineImpulseSource cinemachineImpulseSource;
+    private                   AudioManager             audioManager;
+    private                   float                    currentJumpHeight;
+    [SerializeField] private  float                    maxJumpHeight;
+    private                   CapsuleCollider2D        playerCollider;
+    public                    bool                     hasDoubleJump;
+    private                   bool                     collectedDoubleJump = false;
+    private                   List<DoubleJump>         doubleJumps = new List<DoubleJump>();
  
     void Start() {
-	    cinemachineImpulseSource =  GetComponent<CinemachineImpulseSource>();
-        playerRb = GetComponent<Rigidbody2D>();
-        animator = GetComponentInChildren<Animator>();
-        moveAction = InputSystem.actions.FindAction("Move");
-        jumpAction = InputSystem.actions.FindAction("Jump");
-        crouchAction = InputSystem.actions.FindAction("Crouch");
-        isFacingRight = true;
-	    audioManager = FindAnyObjectByType<AudioManager>();
+	    cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
+        playerRb                 = GetComponent<Rigidbody2D>();
+        spriteAnimator           = playerSr.GetComponent<Animator>();
+        groundCheckAnimator      = groundCheck.GetComponent<Animator>();
+        moveAction               = InputSystem.actions.FindAction("Move");
+        jumpAction               = InputSystem.actions.FindAction("Jump");
+        crouchAction             = InputSystem.actions.FindAction("Crouch");
+        isFacingRight            = true;
+	    audioManager             = FindAnyObjectByType<AudioManager>();
+	    playerCollider           = GetComponent<CapsuleCollider2D>();
+
+
     }
 
     void Update() {
@@ -107,6 +117,16 @@ public class PlayerMovement : MonoBehaviour
 			KnockBack(other.transform.position);
 			cinemachineImpulseSource.GenerateImpulse();
             PlayerHit();
+        } else if (other.CompareTag("DoubleJump")) {
+	        hasDoubleJump = true;
+	        Debug.Log(other);
+	        Debug.Log(other.gameObject);
+	        Debug.Log(other.GetComponentInParent<DoubleJump>());
+	        doubleJumps.Add(other.GetComponentInParent<DoubleJump>());
+	        Destroy(other.gameObject);
+        } else if (other.CompareTag("spring")) {
+	        Bounce(2);
+	        
         }
     }
 
@@ -115,7 +135,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void PlayerHit() {
-	    animator.SetTrigger("hit");
+	    spriteAnimator.SetTrigger("hit");
         invulnerabilityTimer = 1f;
     }
 
@@ -130,12 +150,14 @@ public class PlayerMovement : MonoBehaviour
     private void ReadPlayerInputs() {
         moveInput = moveAction.ReadValue<Vector2>();
 
-        if (jumpAction.WasPressedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned) {
+        if (jumpAction.WasPressedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned || jumpAction.WasPressedThisFrame() && hasDoubleJump) {
+	        playerRb.linearVelocityY = 0;
 	        playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 	        isGrounded        = false;
 	        jumpCooldownTimer = jumpCooldownTime;
-	        animator.SetBool(IsGrounded, false);
+	        spriteAnimator.SetBool(IsGrounded, false);
 	        audioManager.PlaySound(5);
+	        hasDoubleJump = false;
         } else if (jumpAction.IsPressed()) {
 	        if (currentJumpHeight < maxJumpHeight) {
 		        playerRb.AddForce(Vector2.up * (jumpForce * Time.deltaTime * 2), ForceMode2D.Impulse);
@@ -152,21 +174,29 @@ public class PlayerMovement : MonoBehaviour
         //}
 
         if (crouchAction.IsPressed()) {
-            animator.SetBool(IsCrouching, true);
+            spriteAnimator.SetBool(IsCrouching, true);
+            groundCheckAnimator.SetBool(IsCrouching, true);
+            var size = playerCollider.size;
+            size.y              = 0.8f;
+            playerCollider.size = size;
         } else {
-            animator.SetBool(IsCrouching, false);
+            spriteAnimator.SetBool(IsCrouching, false);
+            groundCheckAnimator.SetBool(IsCrouching, false);
+            var size = playerCollider.size;
+            size.y              = 1.9f;
+            playerCollider.size = size;
         }
 
         if (moveInput.x > 0) {
             isFacingRight = true;
-            animator.SetBool(IsWalking, true);
+            spriteAnimator.SetBool(IsWalking, true);
         }
         else if (moveInput.x < 0) {
             isFacingRight = false;
-            animator.SetBool(IsWalking, true);
+            spriteAnimator.SetBool(IsWalking, true);
         }
         else {
-            animator.SetBool(IsWalking, false);
+            spriteAnimator.SetBool(IsWalking, false);
         }
     }
 
@@ -187,10 +217,18 @@ public class PlayerMovement : MonoBehaviour
         Collider2D hit = Physics2D.OverlapCircle(groundCheckPosition.position, groundCheckRadius, groundLayer);
 
         if (hit && jumpCooldownTimer <= 0) {
+	        hasDoubleJump     = false;
             isGrounded        = true;
             currentJumpHeight = 0;
-            animator.SetBool(IsGrounded, true);
+            spriteAnimator.SetBool(IsGrounded, true);
             doingCoyote = false;
+            if (doubleJumps != null) {
+	            for (int i = doubleJumps.Count; i > 0; i--) {
+		            doubleJumps[i-1].SpawnCollectible();
+	            } 
+	            doubleJumps.Clear();
+            }
+            
         }
         else {
             CoyoteTime();
@@ -208,7 +246,7 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator CoyoteTimer(float timer) {
         yield return new WaitForSeconds(timer);
         isGrounded = false;
-        animator.SetBool(IsGrounded, false);
+        spriteAnimator.SetBool(IsGrounded, false);
     }
 
     private void OnDrawGizmos() {
