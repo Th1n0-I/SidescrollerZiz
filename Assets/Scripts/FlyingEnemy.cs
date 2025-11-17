@@ -66,7 +66,7 @@ public class FlyingEnemy : MonoBehaviour
 
     private void MoveEnemy() {
         gameObject.transform.position += new Vector3(moveDistance * Time.deltaTime * direction, 0, 0);
-        Debug.Log(gameObject.transform.position);
+        
 
         if (gameObject.transform.position.x <= pointAPos.x)
         { 

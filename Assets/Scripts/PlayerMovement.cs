@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -40,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     public float     invulnerabilityTimer = 1;
     public HealthBar healthBar; 
     private CinemachineImpulseSource cinemachineImpulseSource;
+    private AudioManager audioManager;
 
  
     void Start() {
@@ -50,9 +53,8 @@ public class PlayerMovement : MonoBehaviour
         jumpAction = InputSystem.actions.FindAction("Jump");
         crouchAction = InputSystem.actions.FindAction("Crouch");
         isFacingRight = true;
+	    audioManager = FindAnyObjectByType<AudioManager>();
     }
-
-    
 
     void Update() {
 
@@ -68,6 +70,12 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
     }
 
+    private void OnTriggerExit2D(Collider2D other) {
+	    if (other.CompareTag("KillBox")) {
+		    KillPlayer();
+	    }
+    }
+
     private void KnockBack(Vector3 colliderPosition) {
 	    stunned = true;
 	    if (colliderPosition.x >= transform.position.x) {
@@ -76,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
 	    else {
 		    playerRb.AddForceAtPosition(new Vector2(1 * knockBackIntensity, 0), colliderPosition, ForceMode2D.Impulse);
 	    }
-	    Bounce(0.5f);
+	    Bounce(0.5f, false);
 	    StartCoroutine(StunnedTimer(stunTimer));
     }
 
@@ -89,19 +97,30 @@ public class PlayerMovement : MonoBehaviour
         if (other.gameObject.CompareTag("enemy") && invulnerabilityTimer <= 0)
         {
             healthBar.health -= 1;
+            if (healthBar.health <= 0) {
+	            KillPlayer();
+            }
+            audioManager.PlaySound(4);
 			KnockBack(other.transform.position);
 			cinemachineImpulseSource.GenerateImpulse();
             PlayerHit();
         }
     }
 
+    private void KillPlayer() {
+	    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     private void PlayerHit() {
         invulnerabilityTimer = 1f;
     }
 
-    public void Bounce(float intensity = 1) {
+    public void Bounce(float intensity = 1, bool playSound = true) {
         playerRb.linearVelocityY = 0;
         playerRb.AddForce(Vector2.up * jumpForce * intensity, ForceMode2D.Impulse);
+        if (playSound) {
+	        audioManager.PlaySound(5);
+        }
     }
 
     private void ReadPlayerInputs() {
@@ -112,6 +131,7 @@ public class PlayerMovement : MonoBehaviour
             isGrounded = false;
             jumpCooldownTimer = jumpCooldownTime;
             animator.SetBool(IsGrounded, false);
+            audioManager.PlaySound(5);
         }
 
         if (crouchAction.IsPressed()) {
