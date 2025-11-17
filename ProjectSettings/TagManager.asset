@@ -15,6 +15,7 @@ TagManager:
   - YellowLock
   - GreenLock
   - RedLock
+  - KillBox
   layers:
   - Default
   - TransparentFX
