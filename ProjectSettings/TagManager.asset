@@ -17,6 +17,13 @@ TagManager:
   - RedLock
   - KillBox
   - DoubleJump
+  - spring
+  - PauseMenu
+  - ContinueButton
+  - MenuButton
+  - StartButton
+  - PlaygroundButton
+  - QuitButton
   layers:
   - Default
   - TransparentFX

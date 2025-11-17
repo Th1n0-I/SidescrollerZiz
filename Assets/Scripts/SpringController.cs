@@ -24,7 +24,7 @@ public class SpringController : MonoBehaviour
 		}
 	}
 	IEnumerator ActivatedTimer() {
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(0.5f);
 		animator.SetBool(IsActivated, false);
 		isActivated = false;
 	}

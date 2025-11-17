@@ -51,7 +51,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private  float                    maxJumpHeight;
     private                   CapsuleCollider2D        playerCollider;
     public                    bool                     hasDoubleJump;
-    private                   bool                     collectedDoubleJump = false;
     private                   List<DoubleJump>         doubleJumps = new List<DoubleJump>();
  
     void Start() {
