@@ -531,6 +531,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf85e763d21301479d212b04085eec7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  parent: {fileID: 777657335223585492}
   countdown: {fileID: 3022690314686742118}
   throwForce: 650
   bombTimer: 3

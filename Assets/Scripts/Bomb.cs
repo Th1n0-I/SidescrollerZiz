@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Bomb : MonoBehaviour {
+	[SerializeField] private GameObject  parent;
 	[SerializeField] private GameObject  countdown;
 	private                  TMP_Text    countdownTMPText;
     private                  Rigidbody2D bombRb;
@@ -42,7 +43,7 @@ public class Bomb : MonoBehaviour {
         yield return new WaitForSeconds(0.1f);
 		
         impulseSource.GenerateImpulse();
-        Destroy(gameObject);
+        Destroy(parent);
     }
 
     // Update is called once per frame

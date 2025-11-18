@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
         isFacingRight            = true;
 	    audioManager             = FindAnyObjectByType<AudioManager>();
 	    playerCollider           = GetComponent<CapsuleCollider2D>();
-
+	    healthBar                = FindAnyObjectByType<HealthBar>();
 
     }
 
