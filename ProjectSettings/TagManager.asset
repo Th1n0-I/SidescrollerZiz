@@ -58,6 +58,21 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: 1Sky
+    uniqueID: 3202668147
+    locked: 0
+  - name: 2
+    uniqueID: 48039225
+    locked: 0
+  - name: 3
+    uniqueID: 430805641
+    locked: 0
+  - name: 4
+    uniqueID: 2757149483
+    locked: 0
+  - name: 5
+    uniqueID: 322179257
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

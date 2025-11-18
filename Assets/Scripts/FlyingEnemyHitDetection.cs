@@ -7,7 +7,7 @@ public class FlyingEnemyHitDetection : MonoBehaviour
 
     private void Awake()
     {
-        enemy = FindAnyObjectByType<FlyingEnemy>();
+        enemy = GetComponentInParent<FlyingEnemy>();
         pMovement = FindAnyObjectByType<PlayerMovement>();
     }
     private void OnTriggerEnter2D(Collider2D collision)

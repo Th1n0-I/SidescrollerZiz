@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
     private                   float                    currentJumpHeight;
     [SerializeField] private  float                    maxJumpHeight;
     private                   CapsuleCollider2D        playerCollider;
-    public                    bool                     hasDoubleJump;
+    public                    bool                     hasDoubleJump = false;
     private                   List<DoubleJump>         doubleJumps = new List<DoubleJump>();
  
     void Start() {
@@ -106,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        if (other.CompareTag("enemy")  && invulnerabilityTimer <= 0 || other.CompareTag("explosion") && invulnerabilityTimer <= 0)
+	    if (other.CompareTag("enemy")  && invulnerabilityTimer <= 0 || other.CompareTag("explosion") && invulnerabilityTimer <= 0)
         {
             healthBar.health -= 1;
             if (healthBar.health <= 0) {
