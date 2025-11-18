@@ -9,10 +9,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Bomb : MonoBehaviour {
-	private          TMP_Text  countdown;
-    private          Rigidbody2D bombRb;
-    [SerializeField] float       throwForce;
-    [SerializeField] float       bombTimer;
+	[SerializeField] private GameObject  countdown;
+	private                  TMP_Text    countdownTMPText;
+    private                  Rigidbody2D bombRb;
+    [SerializeField]         float       throwForce;
+    [SerializeField]         float       bombTimer;
     
     private float countdownTimer = 3.1f;
     
@@ -22,7 +23,7 @@ public class Bomb : MonoBehaviour {
     void Start() {
 	    impulseSource = GetComponent<CinemachineImpulseSource>();
         bombRb        = GetComponent<Rigidbody2D>();
-        countdown     = GetComponentInChildren<TMP_Text>();
+        countdownTMPText     = countdown.gameObject.GetComponent<TMP_Text>();
         bombRb.AddForce((transform.right + transform.up) * throwForce);
         
         StartCoroutine(BombTimer());
@@ -48,6 +49,6 @@ public class Bomb : MonoBehaviour {
     void Update()
     {
         countdownTimer -= Time.deltaTime;
-        countdown.text =  Math.Ceiling(countdownTimer).ToString();
+        countdownTMPText.text =  Math.Ceiling(countdownTimer).ToString();
     }
 }
