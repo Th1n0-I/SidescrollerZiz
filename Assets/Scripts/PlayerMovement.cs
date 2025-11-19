@@ -41,7 +41,9 @@ public class PlayerMovement : MonoBehaviour {
 	private          float            currentJumpHeight;
 	public           bool             hasDoubleJump = false;
 	private          List<DoubleJump> doubleJumps   = new List<DoubleJump>();
-
+	private          bool             isHoldingJump;
+	public           bool             dontDoCoyote;
+	public           bool             dontDoCoyoteCooldown;
 
 	[Header("KnockBackRelated")] [SerializeField]
 	private float knockBackIntensity;
@@ -73,6 +75,9 @@ public class PlayerMovement : MonoBehaviour {
 		audioManager             = FindAnyObjectByType<AudioManager>();
 		playerCollider           = GetComponent<BoxCollider2D>();
 		healthBar                = FindAnyObjectByType<HealthBar>();
+		isHoldingJump            = false;
+		dontDoCoyote             = false;
+		dontDoCoyoteCooldown     = false;
 	}
 
 	void Update() {
@@ -87,6 +92,10 @@ public class PlayerMovement : MonoBehaviour {
 			playerSr.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.2f);
 		} else if (invulnerabilityTimer <= 0 && !stunned) {
 			playerSr.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+		}
+
+		if (isHoldingJump && !jumpAction.IsPressed()) {
+			isHoldingJump = false;
 		}
 	}
 
@@ -158,13 +167,22 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	public void Bounce(float intensity = 1, bool playSound = true) {
+		dontDoCoyote             = true;
+		dontDoCoyoteCooldown     = true;
 		playerRb.linearVelocityY = 0;
 		playerRb.AddForce(Vector2.up * jumpForce * intensity, ForceMode2D.Impulse);
 		if (playSound) {
 			audioManager.PlaySound(5);
 		}
+
+		StartCoroutine(CoyoteCooldown());
 	}
 
+	IEnumerator CoyoteCooldown() {
+		yield return new WaitForSeconds(0.1f);
+		dontDoCoyoteCooldown = false;
+	}
+	
 	private void ReadPlayerInputs() {
 		moveInput = moveAction.ReadValue<Vector2>();
 
@@ -177,12 +195,13 @@ public class PlayerMovement : MonoBehaviour {
 			spriteAnimator.SetBool(IsGrounded, false);
 			audioManager.PlaySound(5);
 			hasDoubleJump = false;
+			isHoldingJump = true;
 		}
-		else if (jumpAction.IsPressed()) {
+		else if (jumpAction.IsPressed() && isHoldingJump) {
 			if (currentJumpHeight < maxJumpHeight) {
 				playerRb.AddForce(Vector2.up * (jumpForce * Time.deltaTime * 10), ForceMode2D.Impulse);
 				currentJumpHeight += Time.deltaTime;
-			}
+			} 
 		}
 
 		//if (jumpAction.WasPerformedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned) {
@@ -239,10 +258,17 @@ public class PlayerMovement : MonoBehaviour {
 
 		if (hit && jumpCooldownTimer <= 0) {
 			hasDoubleJump     = false;
-			isGrounded        = true;
+			
 			currentJumpHeight = 0;
 			spriteAnimator.SetBool(IsGrounded, true);
-			doingCoyote = false;
+			doingCoyote  = false;
+			if (!dontDoCoyoteCooldown) {
+				dontDoCoyote = false;
+				isGrounded   = true;
+			}
+			else {
+				isGrounded   = false;
+			}
 			if (doubleJumps != null) {
 				for (int i = doubleJumps.Count; i > 0; i--) {
 					doubleJumps[i - 1].SpawnCollectible();
@@ -251,7 +277,7 @@ public class PlayerMovement : MonoBehaviour {
 				doubleJumps.Clear();
 			}
 		}
-		else {
+		else if (!dontDoCoyote) {
 			CoyoteTime();
 		}
 	}
