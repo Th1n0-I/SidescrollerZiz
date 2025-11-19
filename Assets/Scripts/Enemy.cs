@@ -2,10 +2,11 @@ using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour {
-	Rigidbody2D            enemyRb;
-	CapsuleCollider2D      enemyCc;
-	Animator               animator;
-	[SerializeField] float moveSpeed;
+	private static readonly int IsDead = Animator.StringToHash("isDead");
+	Rigidbody2D                 enemyRb;
+	CapsuleCollider2D           enemyCc;
+	Animator                    animator;
+	[SerializeField] float      moveSpeed;
 
 	[SerializeField] LayerMask groundLayer;
 	[SerializeField] float     checkDistance;
@@ -27,13 +28,13 @@ public class Enemy : MonoBehaviour {
 
 	private void OnTriggerEnter2D(Collider2D collision) {
 		if (collision.gameObject.CompareTag("explosion")) {
-			hitEnemy();
+			HitEnemy();
 		}
 	}
 
-	public void hitEnemy() {
+	public void HitEnemy() {
 		enemyCc.enabled = false;
-		animator.SetBool("isDead", true);
+		animator.SetBool(IsDead, true);
 		isDead               = true;
 		enemyRb.gravityScale = 4;
 		enemyRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);

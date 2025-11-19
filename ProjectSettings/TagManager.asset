@@ -24,6 +24,7 @@ TagManager:
   - StartButton
   - PlaygroundButton
   - QuitButton
+  - Goal
   layers:
   - Default
   - TransparentFX

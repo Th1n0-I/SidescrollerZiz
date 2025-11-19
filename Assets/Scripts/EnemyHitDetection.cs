@@ -11,7 +11,7 @@ public class EnemyHitDetection : MonoBehaviour {
 
 	private void OnTriggerEnter2D(Collider2D collision) {
 		if (collision.gameObject.CompareTag("Player") && playerMovement.invulnerabilityTimer <= 0) {
-			enemy.hitEnemy();
+			enemy.HitEnemy();
 			playerMovement.Bounce();
 		}
 	}

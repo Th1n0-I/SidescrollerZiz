@@ -57,7 +57,7 @@ public class PlayerMovement : MonoBehaviour {
 	[Header("Other")] [SerializeField] private float             maxJumpHeight;
 	[SerializeField]                   private int               nextLevel;
 	private                                    AudioManager      audioManager;
-	private                                    CapsuleCollider2D playerCollider;
+	private                                    BoxCollider2D playerCollider;
 	private                                    bool              loadingScene = false;
 
 
@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour {
 		crouchAction             = InputSystem.actions.FindAction("Crouch");
 		isFacingRight            = true;
 		audioManager             = FindAnyObjectByType<AudioManager>();
-		playerCollider           = GetComponent<CapsuleCollider2D>();
+		playerCollider           = GetComponent<BoxCollider2D>();
 		healthBar                = FindAnyObjectByType<HealthBar>();
 	}
 
@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	private void OnTriggerExit2D(Collider2D other) {
-		if (other.CompareTag("KillBox") && !loadingScene) {
+		if (other.CompareTag("KillBox")) {
 			KillPlayer();
 		}
 	}
@@ -134,13 +134,15 @@ public class PlayerMovement : MonoBehaviour {
 			Destroy(other.gameObject);
 		}
 		else if (other.CompareTag("Goal")) {
+			loadingScene = true;
 			SceneManager.LoadScene(nextLevel);
 		}
 	}
 
 	private void KillPlayer() {
-		Debug.Log("YIPPIYE YAY WOHOOOOO!");
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		if (!loadingScene) {
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		}
 	}
 
 	private void PlayerHit() {
