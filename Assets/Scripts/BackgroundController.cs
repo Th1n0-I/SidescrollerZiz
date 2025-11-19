@@ -1,9 +1,11 @@
 using UnityEngine;
 
 public class BackgroundController : MonoBehaviour {
-	private float startPosX, lengthX, startPosY, lengthY;
-
-	public GameObject camera;
+	private                      float      startPosX, lengthX, startPosY, lengthY;
+	[SerializeField] private     bool       doDefaultMovement;
+	[SerializeField] private new GameObject camera;
+	private                      float      defaultMovement;
+	[SerializeField] private     float      defaultMovementSpeed;
 
 	public float parallaxEffect;
 
@@ -17,9 +19,11 @@ public class BackgroundController : MonoBehaviour {
 
 	// Update is called once per frame
 	void LateUpdate() {
-		float distanceX = camera.transform.position.x * parallaxEffect;
+		defaultMovement += Time.deltaTime * defaultMovementSpeed;
+		
+		float distanceX = camera.transform.position.x * parallaxEffect + defaultMovement * (1 - parallaxEffect);
 		float distanceY = camera.transform.position.y * parallaxEffect;
-		float movementX = camera.transform.position.x * (1 - parallaxEffect);
+		float movementX = camera.transform.position.x * (1 - parallaxEffect) - defaultMovement * (1 - parallaxEffect);
 		float movementY = camera.transform.position.y * (1 - parallaxEffect);
 
 		transform.position = new Vector3(startPosX + distanceX, startPosY + distanceY, transform.position.z);
