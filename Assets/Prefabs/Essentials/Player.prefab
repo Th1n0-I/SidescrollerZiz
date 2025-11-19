@@ -346,7 +346,7 @@ MonoBehaviour:
   groundCheck: {fileID: 164993348012761119}
   invulnerabilityTimer: 1
   healthBar: {fileID: 0}
-  maxJumpHeight: 0.4
+  maxJumpHeight: 0.1
   nextLevel: 0
 --- !u!50 &3250337274173946929
 Rigidbody2D:
@@ -363,7 +363,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 7
+  m_GravityScale: 10
   m_Material: {fileID: 6200000, guid: 2ac37a19e05a4de4db78d89d75a312c0, type: 2}
   m_IncludeLayers:
     serializedVersion: 2

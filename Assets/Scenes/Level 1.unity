@@ -637,12 +637,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2980328113751261620, guid: c8f843326ae4ede4a90bb4fce9364a98, type: 3}
+      propertyPath: jumpForce
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2980328113751261620, guid: c8f843326ae4ede4a90bb4fce9364a98, type: 3}
       propertyPath: nextLevel
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2980328113751261620, guid: c8f843326ae4ede4a90bb4fce9364a98, type: 3}
       propertyPath: hasDoubleJump
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2980328113751261620, guid: c8f843326ae4ede4a90bb4fce9364a98, type: 3}
+      propertyPath: maxJumpHeight
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3250337274173946929, guid: c8f843326ae4ede4a90bb4fce9364a98, type: 3}
+      propertyPath: m_GravityScale
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4930900268484812631, guid: c8f843326ae4ede4a90bb4fce9364a98, type: 3}
       propertyPath: m_Name

@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour {
 	[SerializeField] private GameObject               playerSr;
 	[SerializeField] private GameObject               groundCheck;
 	private                  bool                     stunned              = false;
-	public                   float                    invulnerabilityTimer = 1;
+	public                   float                    invulnerabilityTimer;
 	public                   HealthBar                healthBar;
 	private                  CinemachineImpulseSource cinemachineImpulseSource;
 
@@ -82,6 +82,12 @@ public class PlayerMovement : MonoBehaviour {
 		GroundCheck();
 
 		ReadPlayerInputs();
+
+		if (!stunned && invulnerabilityTimer > 0) {
+			playerSr.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.2f);
+		} else if (invulnerabilityTimer <= 0 && !stunned) {
+			playerSr.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+		}
 	}
 
 	private void FixedUpdate() {
@@ -147,7 +153,8 @@ public class PlayerMovement : MonoBehaviour {
 
 	private void PlayerHit() {
 		spriteAnimator.SetTrigger("hit");
-		invulnerabilityTimer = 1f;
+		
+		invulnerabilityTimer = 3f;
 	}
 
 	public void Bounce(float intensity = 1, bool playSound = true) {
@@ -173,7 +180,7 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		else if (jumpAction.IsPressed()) {
 			if (currentJumpHeight < maxJumpHeight) {
-				playerRb.AddForce(Vector2.up * (jumpForce * Time.deltaTime * 2), ForceMode2D.Impulse);
+				playerRb.AddForce(Vector2.up * (jumpForce * Time.deltaTime * 10), ForceMode2D.Impulse);
 				currentJumpHeight += Time.deltaTime;
 			}
 		}
