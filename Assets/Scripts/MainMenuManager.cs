@@ -14,7 +14,5 @@ public class MainMenuManager : MonoBehaviour {
 		SceneManager.LoadScene(playgroundScene);
 	}
 
-	public void LoadLevel1() {
-		
-	}
+	public void LoadLevel1() { }
 }

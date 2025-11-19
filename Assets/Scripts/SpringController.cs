@@ -3,15 +3,14 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class SpringController : MonoBehaviour
-{
+public class SpringController : MonoBehaviour {
 	private static readonly  int            IsActivated = Animator.StringToHash("IsActivated");
 	private                  bool           isActivated = false;
 	private                  Animator       animator;
 	[SerializeField] private PlayerMovement playerMovement;
 
 	private void Start() {
-		animator = GetComponent<Animator>();
+		animator       = GetComponent<Animator>();
 		playerMovement = FindAnyObjectByType<PlayerMovement>();
 	}
 
@@ -23,6 +22,7 @@ public class SpringController : MonoBehaviour
 			StartCoroutine(ActivatedTimer());
 		}
 	}
+
 	IEnumerator ActivatedTimer() {
 		yield return new WaitForSeconds(0.5f);
 		animator.SetBool(IsActivated, false);

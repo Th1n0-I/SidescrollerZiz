@@ -10,11 +10,10 @@ public class PauseMenuManager : MonoBehaviour {
 	[SerializeField] private GameObject  player;
 
 
-
 	private void OnEnable() {
 		pauseAction = InputSystem.actions.FindAction("Pause");
 	}
-	
+
 	private void Update() {
 		if (paused && pauseAction.WasPressedThisFrame()) {
 			Debug.Log("EscapePressed");

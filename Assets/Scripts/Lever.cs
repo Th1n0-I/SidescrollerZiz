@@ -15,9 +15,9 @@ public class Lever : MonoBehaviour {
 	private                  Platform       platformScript;
 
 	private void Start() {
-		animator = gameObject.GetComponent<Animator>();
-		interact = InputSystem.actions.FindAction("Interact");
-		keycapSr = keycap.GetComponent<SpriteRenderer>();
+		animator       = gameObject.GetComponent<Animator>();
+		interact       = InputSystem.actions.FindAction("Interact");
+		keycapSr       = keycap.GetComponent<SpriteRenderer>();
 		platformScript = platform.GetComponent<Platform>();
 	}
 
@@ -57,12 +57,13 @@ public class Lever : MonoBehaviour {
 
 	public void FlipLeverOn() {
 		animator.SetBool(IsFlipped, true);
-		flipped            = true;
+		flipped                  = true;
 		platformScript.direction = 1;
 	}
+
 	public void FlipLeverOff() {
 		animator.SetBool(IsFlipped, false);
-		flipped = false;
+		flipped                  = false;
 		platformScript.direction = -1;
 	}
 }
