@@ -4,12 +4,13 @@ public class CrateController : MonoBehaviour {
 	[SerializeField] private GameObject groundCheckPosition;
 	[SerializeField] private float      groundCheckRadius;
 	[SerializeField] private LayerMask  groundLayer;
-	[SerializeField] private float      fallStartPos;
-	[SerializeField] private float      fallLength;
-	[SerializeField] private bool       countedFallStartPos = false;
+	private                  float      fallStartPos;
+	private                  float      fallLength;
+	private                  bool       countedFallStartPos = false;
 	[SerializeField] private float      maxFallLength;
-	[SerializeField] private bool       isGrounded;
+	private                  bool       isGrounded;
 	[SerializeField] private GameObject destroyCrate;
+	[SerializeField] private GameObject objectInBox;
 
 	void Update() {
 		GroundCheck();
@@ -40,6 +41,9 @@ public class CrateController : MonoBehaviour {
 	}
 
 	private void BreakBox() {
+		if (objectInBox) {
+			GameObject.Instantiate(objectInBox, transform.position, Quaternion.identity);
+		}
 		GameObject.Instantiate(destroyCrate, transform.position, transform.rotation);
 		Destroy(gameObject);
 	}
