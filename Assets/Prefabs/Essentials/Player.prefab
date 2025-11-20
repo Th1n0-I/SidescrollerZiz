@@ -270,7 +270,7 @@ GameObject:
   - component: {fileID: 2980328113751261620}
   - component: {fileID: 3250337274173946929}
   - component: {fileID: 6443119702402441672}
-  - component: {fileID: 8195217692924499851}
+  - component: {fileID: 2478241435347080280}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -342,6 +342,7 @@ MonoBehaviour:
   hasDoubleJump: 0
   dontDoCoyote: 0
   dontDoCoyoteCooldown: 0
+  maxFallSpeed: -100
   knockBackIntensity: 10
   stunTimer: 0.6
   playerSr: {fileID: 2416365679205057449}
@@ -430,8 +431,8 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 1, y: -1, z: 0}
---- !u!61 &8195217692924499851
-BoxCollider2D:
+--- !u!70 &2478241435347080280
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -465,14 +466,5 @@ BoxCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1.41, y: 1.91}
-  m_EdgeRadius: 0
+  m_Size: {x: 1.52, y: 1.96}
+  m_Direction: 0

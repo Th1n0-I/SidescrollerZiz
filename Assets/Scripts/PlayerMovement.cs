@@ -31,19 +31,20 @@ public class PlayerMovement : MonoBehaviour {
 	[Header("GroundCheckRelated")] [SerializeField]
 	bool isGrounded;
 
-	[SerializeField] Transform        groundCheckPosition;
-	[SerializeField] float            groundCheckRadius;
-	[SerializeField] LayerMask        groundLayer;
-	[SerializeField] bool             doingCoyote;
-	[SerializeField] float            coyoteTime;
-	[SerializeField] float            jumpCooldownTime;
-	[SerializeField] float            jumpCooldownTimer;
-	private          float            currentJumpHeight;
-	public           bool             hasDoubleJump = false;
-	private          List<DoubleJump> doubleJumps   = new List<DoubleJump>();
-	private          bool             isHoldingJump;
-	public           bool             dontDoCoyote;
-	public           bool             dontDoCoyoteCooldown;
+	[SerializeField]         Transform        groundCheckPosition;
+	[SerializeField]         float            groundCheckRadius;
+	[SerializeField]         LayerMask        groundLayer;
+	[SerializeField]         bool             doingCoyote;
+	[SerializeField]         float            coyoteTime;
+	[SerializeField]         float            jumpCooldownTime;
+	[SerializeField]         float            jumpCooldownTimer;
+	private                  float            currentJumpHeight;
+	public                   bool             hasDoubleJump = false;
+	private                  List<DoubleJump> doubleJumps   = new List<DoubleJump>();
+	private                  bool             isHoldingJump;
+	public                   bool             dontDoCoyote;
+	public                   bool             dontDoCoyoteCooldown;
+	[SerializeField] private float            maxFallSpeed;
 
 	[Header("KnockBackRelated")] [SerializeField]
 	private float knockBackIntensity;
@@ -59,7 +60,7 @@ public class PlayerMovement : MonoBehaviour {
 	[Header("Other")] [SerializeField] private float             maxJumpHeight;
 	[SerializeField]                   private int               nextLevel;
 	private                                    AudioManager      audioManager;
-	private                                    BoxCollider2D playerCollider;
+	private                                    CapsuleCollider2D playerCollider;
 	private                                    bool              loadingScene = false;
 
 
@@ -73,7 +74,7 @@ public class PlayerMovement : MonoBehaviour {
 		crouchAction             = InputSystem.actions.FindAction("Crouch");
 		isFacingRight            = true;
 		audioManager             = FindAnyObjectByType<AudioManager>();
-		playerCollider           = GetComponent<BoxCollider2D>();
+		playerCollider           = GetComponent<CapsuleCollider2D>();
 		healthBar                = FindAnyObjectByType<HealthBar>();
 		isHoldingJump            = false;
 		dontDoCoyote             = false;
@@ -88,6 +89,8 @@ public class PlayerMovement : MonoBehaviour {
 
 		ReadPlayerInputs();
 
+		FallCheck();
+
 		if (!stunned && invulnerabilityTimer > 0) {
 			playerSr.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.2f);
 		} else if (invulnerabilityTimer <= 0 && !stunned) {
@@ -99,14 +102,15 @@ public class PlayerMovement : MonoBehaviour {
 		}
 	}
 
-	private void FixedUpdate() {
-		MovePlayer();
-	}
-
-	private void OnTriggerExit2D(Collider2D other) {
-		if (other.CompareTag("KillBox")) {
+	private void FallCheck() {
+		Debug.Log(playerRb.linearVelocityY);
+		if (playerRb.linearVelocityY <= maxFallSpeed) {
 			KillPlayer();
 		}
+	}
+
+	private void FixedUpdate() {
+		MovePlayer();
 	}
 
 	private void KnockBack(Vector3 colliderPosition) {
@@ -128,19 +132,25 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	private void OnTriggerEnter2D(Collider2D other) {
-		if (other.CompareTag("enemy")     && invulnerabilityTimer <= 0 ||
-		    other.CompareTag("explosion") && invulnerabilityTimer <= 0) {
-			healthBar.health -= 1;
-			if (healthBar.health <= 0) {
-				KillPlayer();
+		if (other.CompareTag("explosion") && invulnerabilityTimer <= 0) {
+			PlayerHit(other);
+		}else if (other.CompareTag("enemy") && invulnerabilityTimer <= 0) {
+			if (playerRb.linearVelocityY >= -0.1f) {
+				PlayerHit(other);
 			}
-
-			audioManager.PlaySound(4);
-			KnockBack(other.transform.position);
-			cinemachineImpulseSource.GenerateImpulse();
-			PlayerHit();
-		}
-		else if (other.CompareTag("DoubleJump")) {
+			else {
+				other.GetComponentInParent<Enemy>().HitEnemy();
+				Bounce();
+			}
+		}else if (other.CompareTag("FlyingEnemy") && invulnerabilityTimer <= 0) {
+			if (playerRb.linearVelocityY >= -0.1f) {
+				PlayerHit(other);
+			}
+			else {
+				other.GetComponentInParent<FlyingEnemy>().HitEnemy();
+				Bounce();
+			}	
+		}else if (other.CompareTag("DoubleJump")) {
 			hasDoubleJump = true;
 			Debug.Log(other);
 			Debug.Log(other.gameObject);
@@ -160,10 +170,19 @@ public class PlayerMovement : MonoBehaviour {
 		}
 	}
 
-	private void PlayerHit() {
+	private void PlayerHit(Collider2D other) {
+		healthBar.health -= 1;
+		if (healthBar.health <= 0) {
+			KillPlayer();
+		}
+		audioManager.PlaySound(4);
+		KnockBack(other.transform.position);
+		cinemachineImpulseSource.GenerateImpulse();
 		spriteAnimator.SetTrigger("hit");
-		
 		invulnerabilityTimer = 3f;
+		if (healthBar.health <= 0) {
+				KillPlayer();
+			}
 	}
 
 	public void Bounce(float intensity = 1, bool playSound = true) {
