@@ -16,7 +16,7 @@ public class SpringController : MonoBehaviour {
 
 	private void OnTriggerEnter2D(Collider2D collision) {
 		if (collision.gameObject.CompareTag("Player") && !isActivated) {
-			playerMovement.Bounce(2);
+			playerMovement.Bounce(3);
 			animator.SetBool(IsActivated, true);
 			isActivated = true;
 			StartCoroutine(ActivatedTimer());

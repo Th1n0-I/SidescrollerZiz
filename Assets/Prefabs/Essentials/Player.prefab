@@ -340,11 +340,13 @@ MonoBehaviour:
   jumpCooldownTime: 0.1
   jumpCooldownTimer: 0
   hasDoubleJump: 0
+  dontDoCoyote: 0
+  dontDoCoyoteCooldown: 0
   knockBackIntensity: 10
   stunTimer: 0.6
   playerSr: {fileID: 2416365679205057449}
   groundCheck: {fileID: 164993348012761119}
-  invulnerabilityTimer: 1
+  invulnerabilityTimer: 0
   healthBar: {fileID: 0}
   maxJumpHeight: 0.1
   nextLevel: 0

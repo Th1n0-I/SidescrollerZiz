@@ -2,13 +2,15 @@ using System.Collections;
 using UnityEngine;
 
 public class FlyingEnemy : MonoBehaviour {
-	private static readonly int IsDead = Animator.StringToHash("isDead");
-	BoxCollider2D               enemyBc;
-	Rigidbody2D                 enemyRb;
-	Animator                    animator;
-	SpriteRenderer              enemySr;
-	[SerializeField] GameObject pointA;
-	[SerializeField] GameObject pointB;
+	private static readonly  int            IsDead = Animator.StringToHash("isDead");
+	private                  BoxCollider2D  enemyBc;
+	private                  Rigidbody2D    enemyRb;
+	private                  Animator       animator;
+	private                  SpriteRenderer enemySr;
+	[SerializeField] private GameObject     hitDetectionBody;
+	private                  BoxCollider2D  hitDetectionBodyBc;
+	[SerializeField]         GameObject     pointA;
+	[SerializeField]         GameObject     pointB;
 
 	[SerializeField] float cycleTime;
 
@@ -34,10 +36,11 @@ public class FlyingEnemy : MonoBehaviour {
 		pointAPos = pointA.transform.position;
 		pointBPos = pointB.transform.position;
 
-		enemyBc  = GetComponent<BoxCollider2D>();
-		enemyRb  = GetComponent<Rigidbody2D>();
-		animator = GetComponent<Animator>();
-		enemySr  = GetComponent<SpriteRenderer>();
+		hitDetectionBodyBc = hitDetectionBody.GetComponent<BoxCollider2D>();
+		enemyBc            = GetComponent<BoxCollider2D>();
+		enemyRb            = GetComponent<Rigidbody2D>();
+		animator           = GetComponent<Animator>();
+		enemySr            = GetComponent<SpriteRenderer>();
 
 		distanceBetweenPoints = pointBPos.x - pointAPos.x;
 
@@ -45,7 +48,9 @@ public class FlyingEnemy : MonoBehaviour {
 	}
 
 	public void HitEnemy() {
+		Debug.Log(hitDetectionBody.name);
 		enemyBc.enabled = false;
+		hitDetectionBodyBc.enabled = false;
 		animator.SetBool(IsDead, true);
 		enemyRb.gravityScale = 4;
 		enemyRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);

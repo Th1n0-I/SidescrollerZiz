@@ -2,11 +2,13 @@ using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour {
-	private static readonly int IsDead = Animator.StringToHash("isDead");
-	Rigidbody2D                 enemyRb;
-	CapsuleCollider2D           enemyCc;
-	Animator                    animator;
-	[SerializeField] float      moveSpeed;
+	private static readonly int            IsDead = Animator.StringToHash("isDead");
+	Rigidbody2D                            enemyRb;
+	CapsuleCollider2D                      enemyCc;
+	Animator                               animator;
+	[SerializeField]         float         moveSpeed;
+	[SerializeField] private GameObject    hitDetectionBody;
+	private                  BoxCollider2D hitDetectionBodyBc;
 
 	[SerializeField] LayerMask groundLayer;
 	[SerializeField] float     checkDistance;
@@ -23,6 +25,7 @@ public class Enemy : MonoBehaviour {
 		enemyRb  = GetComponent<Rigidbody2D>();
 		enemyCc  = GetComponent<CapsuleCollider2D>();
 		animator = GetComponent<Animator>();
+		hitDetectionBodyBc = hitDetectionBody.GetComponent<BoxCollider2D>();
 	}
 
 
@@ -33,7 +36,8 @@ public class Enemy : MonoBehaviour {
 	}
 
 	public void HitEnemy() {
-		enemyCc.enabled = false;
+		hitDetectionBodyBc.enabled = false;
+		enemyCc.enabled            = false;
 		animator.SetBool(IsDead, true);
 		isDead               = true;
 		enemyRb.gravityScale = 4;

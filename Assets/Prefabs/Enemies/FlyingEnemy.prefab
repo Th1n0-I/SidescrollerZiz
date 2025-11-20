@@ -83,6 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 382dadd2044beeb44a479ba63b3ff284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  hitDetectionBody: {fileID: 8845745606415460835}
   pointA: {fileID: 5998776125818185910}
   pointB: {fileID: 1561418066556184174}
   cycleTime: 3
@@ -135,7 +136,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1688335501
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 5432145279577840185, guid: 2007c9b922f369145a0810f71cd97f9f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -310,7 +311,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.05}
+  m_Offset: {x: 0, y: 0.18}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -320,7 +321,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 0.12}
+  m_Size: {x: 0.78, y: 0.12}
   m_EdgeRadius: 0
 --- !u!114 &7157627751538857125
 MonoBehaviour:
