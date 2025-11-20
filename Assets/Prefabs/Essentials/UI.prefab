@@ -1065,8 +1065,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   diamonds: 0
   count: 0
-  diamondCounter: {fileID: 5592113571784608987}
-  bombCounter: {fileID: 2471721956558119579}
+  diamondCounter: {fileID: 2581087341785663861}
+  bombCounter: {fileID: 7081785976896926770}
   keys: []
   keyCounterLocation: {fileID: 499021087718572323}
   guiKeyRed: {fileID: 1465286674738299699, guid: 86f54ed050f9115469fa4fcb29ce7514, type: 3}

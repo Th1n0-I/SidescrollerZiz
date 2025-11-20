@@ -82,7 +82,23 @@ public class Counters : MonoBehaviour {
 	}
 
 	void Update() {
-		diamondCounter.GetComponent<TextMeshProUGUI>().text = "X" + diamonds;
-		bombCounter.GetComponent<TextMeshProUGUI>().text    = "x" + inventory.bombs;
+		if (diamonds < 1) {
+			diamondCounter.SetActive(false);
+		}
+		else if (diamonds > 0) {
+			diamondCounter.SetActive(true);
+			diamondCounter.GetComponentInChildren<TextMeshProUGUI>().text = "X" + diamonds;
+		}
+
+		if (inventory.bombs < 1) {
+			bombCounter.SetActive(false);
+		}
+		else if (inventory.bombs > 0) {
+			bombCounter.SetActive(true);
+			bombCounter.GetComponentInChildren<TextMeshProUGUI>().text    = "x" + inventory.bombs;
+			
+		}
+	
+		
 	}
 }
