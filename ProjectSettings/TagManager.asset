@@ -25,6 +25,7 @@ TagManager:
   - PlaygroundButton
   - QuitButton
   - Goal
+  - FlyingEnemy
   layers:
   - Default
   - TransparentFX
