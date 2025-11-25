@@ -41,7 +41,7 @@ public class PlayerMovement : MonoBehaviour {
 	private                  float            currentJumpHeight;
 	public                   bool             hasDoubleJump = false;
 	private                  List<DoubleJump> doubleJumps   = new List<DoubleJump>();
-	private                  bool             isHoldingJump;
+	public                   bool             isHoldingJump;
 	public                   bool             dontDoCoyote;
 	public                   bool             dontDoCoyoteCooldown;
 	[SerializeField] private float            maxFallSpeed;
@@ -201,35 +201,37 @@ public class PlayerMovement : MonoBehaviour {
 		yield return new WaitForSeconds(0.1f);
 		dontDoCoyoteCooldown = false;
 	}
-	
-	private void ReadPlayerInputs() {
-		moveInput = moveAction.ReadValue<Vector2>();
 
-		if (jumpAction.WasPressedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned ||
-		    jumpAction.WasPressedThisFrame() && hasDoubleJump) {
+	private void Jump(bool normalJump = true) {
+		if (normalJump) {
 			playerRb.linearVelocityY = 0;
 			playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 			isGrounded        = false;
 			jumpCooldownTimer = jumpCooldownTime;
 			spriteAnimator.SetBool(IsGrounded, false);
 			audioManager.PlaySound(5);
-			hasDoubleJump = false;
-			isHoldingJump = true;
+			hasDoubleJump     = false;
+			isHoldingJump     = true;
+			currentJumpHeight = 0;
+		}
+		else {
+			playerRb.AddForce(Vector2.up * (jumpForce * Time.deltaTime * 10), ForceMode2D.Impulse);
+			currentJumpHeight += Time.deltaTime;
+		}
+	}
+	
+	private void ReadPlayerInputs() {
+		moveInput = moveAction.ReadValue<Vector2>();
+
+		if (jumpAction.WasPressedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned ||
+		    jumpAction.WasPressedThisFrame() && hasDoubleJump) {
+			Jump();
 		}
 		else if (jumpAction.IsPressed() && isHoldingJump) {
 			if (currentJumpHeight < maxJumpHeight) {
-				playerRb.AddForce(Vector2.up * (jumpForce * Time.deltaTime * 10), ForceMode2D.Impulse);
-				currentJumpHeight += Time.deltaTime;
+				Jump(false);
 			} 
 		}
-
-		//if (jumpAction.WasPerformedThisFrame() && isGrounded && jumpCooldownTimer <= 0 && !stunned) {
-		//playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-		//isGrounded = false;
-		//jumpCooldownTimer = jumpCooldownTime;
-		//animator.SetBool(IsGrounded, false);
-		//audioManager.PlaySound(5);
-		//}
 
 		if (crouchAction.IsPressed()) {
 			spriteAnimator.SetBool(IsCrouching, true);
