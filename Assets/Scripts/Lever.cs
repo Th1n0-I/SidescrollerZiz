@@ -3,22 +3,24 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Lever : MonoBehaviour {
-	private static readonly  int            IsFlipped = Animator.StringToHash("isFlipped");
-	public                   bool           flipped   = false;
-	private                  Animator       animator;
-	public                   bool           playerInRange;
-	[SerializeField] private InputAction    interact;
-	[SerializeField] private GameObject     keycap;
-	private                  SpriteRenderer keycapSr;
-	[SerializeField] private GameObject     player;
-	[SerializeField] private GameObject     platform;
-	private                  Platform       platformScript;
+	private static readonly int            IsFlipped = Animator.StringToHash("isFlipped");
+	public                  bool           flipped   = false;
+	private                 Animator       animator;
+	public                  bool           playerInRange;
+	private                 InputAction    interact;
+	private                 SpriteRenderer keycapSr;
+	private                 GameObject     player;
+	public                  Platform       platformScript;
+
+	[SerializeField] private GameObject platform;
+	[SerializeField] private GameObject keycap;
 
 	private void Start() {
 		animator       = gameObject.GetComponent<Animator>();
 		interact       = InputSystem.actions.FindAction("Interact");
 		keycapSr       = keycap.GetComponent<SpriteRenderer>();
 		platformScript = platform.GetComponent<Platform>();
+		player         = GameObject.FindGameObjectWithTag("Player");
 	}
 
 	private void Update() {
@@ -34,12 +36,16 @@ public class Lever : MonoBehaviour {
 
 	private void CheckPlayerInputs() {
 		if (interact.WasPerformedThisFrame() && playerInRange) {
-			if (!flipped) {
-				FlipLeverOn();
-			}
-			else {
-				FlipLeverOff();
-			}
+			FlipLever();
+		}
+	}
+
+	public void FlipLever() {
+		if (!flipped) {
+			FlipLeverOn();
+		}
+		else {
+			FlipLeverOff();
 		}
 	}
 
@@ -55,13 +61,13 @@ public class Lever : MonoBehaviour {
 		}
 	}
 
-	public void FlipLeverOn() {
+	private void FlipLeverOn() {
 		animator.SetBool(IsFlipped, true);
 		flipped                  = true;
 		platformScript.direction = 1;
 	}
 
-	public void FlipLeverOff() {
+	private void FlipLeverOff() {
 		animator.SetBool(IsFlipped, false);
 		flipped                  = false;
 		platformScript.direction = -1;

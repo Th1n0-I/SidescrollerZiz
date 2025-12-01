@@ -762,7 +762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dc8ea7eb8e5c4d48ac83efcdbcdc139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  startMenu: 1
+  startMenu: 0
   pauseAction:
     m_Name: Pause
     m_Type: 0
@@ -773,4 +773,3 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   pauseMenuContainer: {fileID: 6088419307830597280}
-  player: {fileID: 0}

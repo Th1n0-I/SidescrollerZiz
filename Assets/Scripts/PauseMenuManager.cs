@@ -7,11 +7,12 @@ public class PauseMenuManager : MonoBehaviour {
 	[SerializeField] private int         startMenu;
 	[SerializeField] private InputAction pauseAction;
 	[SerializeField] private GameObject  pauseMenuContainer;
-	[SerializeField] private GameObject  player;
+	private                  GameObject  player;
 
 
 	private void OnEnable() {
 		pauseAction = InputSystem.actions.FindAction("Pause");
+		player      = GameObject.FindWithTag("Player");
 	}
 
 	private void Update() {
@@ -25,19 +26,21 @@ public class PauseMenuManager : MonoBehaviour {
 		}
 	}
 
-	public void PauseGame() {
+	private void PauseGame() {
 		Time.timeScale = 0;
 		paused         = true;
 		pauseMenuContainer.SetActive(true);
 	}
 
 	public void ResumeGame() {
+		Debug.Log("Resuming");
 		Time.timeScale = 1;
 		paused         = false;
 		pauseMenuContainer.SetActive(false);
 	}
 
 	public void ReturnToMainMenu() {
+		Debug.Log("Returning to main menu");
 		Destroy(player);
 		Time.timeScale = 1;
 		SceneManager.LoadScene(startMenu);

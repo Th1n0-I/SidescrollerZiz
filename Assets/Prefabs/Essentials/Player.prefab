@@ -326,7 +326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d69c48e15bd4cde4cae426e2df2e45b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  moveSpeed: 7
+  moveSpeed: 10
   jumpForce: 20
   isFacingRight: 0
   isGrounded: 0
@@ -340,6 +340,7 @@ MonoBehaviour:
   jumpCooldownTime: 0.1
   jumpCooldownTimer: 0
   hasDoubleJump: 0
+  isHoldingJump: 0
   dontDoCoyote: 0
   dontDoCoyoteCooldown: 0
   maxFallSpeed: -100

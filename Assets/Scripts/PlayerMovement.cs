@@ -103,7 +103,6 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	private void FallCheck() {
-		Debug.Log(playerRb.linearVelocityY);
 		if (playerRb.linearVelocityY <= maxFallSpeed) {
 			KillPlayer();
 		}
@@ -129,6 +128,12 @@ public class PlayerMovement : MonoBehaviour {
 	IEnumerator StunnedTimer(float timer) {
 		yield return new WaitForSeconds(timer);
 		stunned = false;
+	}
+
+	private void OnCollisionEnter2D(Collision2D collision) {
+		if (collision.gameObject.CompareTag("SpikeBlock")) {
+			KillPlayer();
+		}
 	}
 
 	private void OnTriggerEnter2D(Collider2D other) {

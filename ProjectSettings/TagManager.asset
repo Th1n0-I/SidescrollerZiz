@@ -26,6 +26,7 @@ TagManager:
   - QuitButton
   - Goal
   - FlyingEnemy
+  - SpikeBlock
   layers:
   - Default
   - TransparentFX
@@ -38,7 +39,7 @@ TagManager:
   - Bomb
   - Enemy
   - DestroyedPart
-  - 
+  - Post Processing
   - 
   - 
   - 

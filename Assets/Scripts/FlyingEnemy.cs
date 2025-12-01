@@ -48,7 +48,6 @@ public class FlyingEnemy : MonoBehaviour {
 	}
 
 	public void HitEnemy() {
-		Debug.Log(hitDetectionBody.name);
 		enemyBc.enabled = false;
 		hitDetectionBodyBc.enabled = false;
 		animator.SetBool(IsDead, true);
