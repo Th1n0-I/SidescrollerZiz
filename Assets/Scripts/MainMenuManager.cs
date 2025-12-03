@@ -4,15 +4,13 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour {
-	[Header("Scenes")] [SerializeField] int playgroundScene;
+	[Header("Scenes")] [SerializeField] int level1;
 
 	public void QuitGame() {
 		Application.Quit();
 	}
 
-	public void LoadPlaygroundScene() {
-		SceneManager.LoadScene(playgroundScene);
+	public void LoadLevel1() {
+		SceneManager.LoadScene(level1);
 	}
-
-	public void LoadLevel1() { }
 }
