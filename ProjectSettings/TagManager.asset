@@ -27,6 +27,7 @@ TagManager:
   - Goal
   - FlyingEnemy
   - SpikeBlock
+  - GameManager
   layers:
   - Default
   - TransparentFX
