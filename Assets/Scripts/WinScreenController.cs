@@ -22,6 +22,8 @@ public class WinScreenController : MonoBehaviour
 			gameManager       = GameObject.Find("GameManager");
 			gameManagerScript = gameManager.GetComponent<GameManager>();
 			
+			gameManagerScript.StopCountingStats();
+			
 			seconds           = Convert.ToInt32(gameManagerScript.gameTimer % 60);
 			minutes           = Convert.ToInt32(gameManagerScript.gameTimer - seconds) / 60;
 		

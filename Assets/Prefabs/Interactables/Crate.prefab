@@ -210,11 +210,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97624d7a51555d5418c675994cae9cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  groundCheckPosition: {fileID: 1623333360967141612}
-  groundCheckRadius: 0.03
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  maxFallLength: 1
   destroyCrate: {fileID: 1099640629258059960, guid: 809769895f28f5c4cb45a531362f957f, type: 3}
   objectInBox: {fileID: 0}
+  rb: {fileID: 1823377443567877757}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -41,12 +42,13 @@ public class PlayerMovement : MonoBehaviour {
 	[SerializeField]         float     jumpCooldownTimer;
 	[SerializeField] private float     maxFallSpeed;
 
-	private float            currentJumpHeight;
-	public  bool             hasDoubleJump = false;
-	private List<DoubleJump> doubleJumps   = new List<DoubleJump>();
-	public  bool             isHoldingJump;
-	public  bool             dontDoCoyote;
-	public  bool             dontDoCoyoteCooldown;
+	private float currentJumpHeight;
+	private bool  hasDoubleJump = false;
+	private bool  isHoldingJump;
+	private bool  dontDoCoyote;
+	private bool  dontDoCoyoteCooldown;
+
+	private List<DoubleJumpController> doubleJumps = new List<DoubleJumpController>();
 
 
 	[Header("KnockBackRelated")]
@@ -70,6 +72,7 @@ public class PlayerMovement : MonoBehaviour {
 
 
 	private void Start() {
+		
 		cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
 		playerRb                 = GetComponent<Rigidbody2D>();
 		spriteAnimator           = playerSr.GetComponent<Animator>();
@@ -153,12 +156,11 @@ public class PlayerMovement : MonoBehaviour {
 				Bounce();
 			}
 		} else if (other.CompareTag("DoubleJump")) {
+			//Adds the script from the double jump collectible to a list to later execute a function in it.
 			hasDoubleJump = true;
-			Debug.Log(other);
-			Debug.Log(other.gameObject);
-			Debug.Log(other.GetComponentInParent<DoubleJump>());
-			doubleJumps.Add(other.GetComponentInParent<DoubleJump>());
-			Destroy(other.gameObject);
+			DoubleJumpController script = other.GetComponentInParent<DoubleJumpController>();
+			script.Collected();
+			if (!(doubleJumps.Contains(script))) doubleJumps.Add(script);
 		} else if (other.CompareTag("Goal")) {
 			loadingScene = true;
 			SceneManager.LoadScene(nextLevel);
@@ -167,8 +169,7 @@ public class PlayerMovement : MonoBehaviour {
 
 	private void KillPlayer() {
 		if (loadingScene) return;
-		gameManager.AddDeath();
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		gameManager.PlayerDied();
 	}
 
 	private void PlayerHit(Collider2D other) {
@@ -287,18 +288,18 @@ public class PlayerMovement : MonoBehaviour {
 			if (!dontDoCoyoteCooldown) {
 				dontDoCoyote = false;
 				isGrounded   = true;
+				if (doubleJumps.Count > 0) RespawnDoubleJumps();
 			} else {
 				isGrounded = false;
 			}
-
-			if (doubleJumps == null) return;
-			for (var i = doubleJumps.Count; i > 0; i--) {
-				doubleJumps[i - 1].SpawnCollectible();
-			}
-
-			doubleJumps.Clear();
 		} else if (!dontDoCoyote) {
 			CoyoteTime();
+		}
+	}
+
+	private void RespawnDoubleJumps() {
+		foreach (var t in doubleJumps) {
+			t.PlayerLanded();
 		}
 	}
 
